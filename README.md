@@ -14,7 +14,7 @@
 	
 ## 备注
 	svm_article 数据说明
-	训练语料是基于 7万 多条金融咨询的 利好/利空 文章（由于github 文件限制，可在我的百度网盘找到- 链接：https://pan.baidu.com/s/1YvecNYmSTKeW3CpCJbKBZQ 密码：maad）
+	训练语料是基于 7万 多条金融咨询的 利好/利空 文章: data/train.raw.data（由于github 文件限制，可在我的百度网盘找到- 链接：https://pan.baidu.com/s/1YvecNYmSTKeW3CpCJbKBZQ 密码：maad）
 	这 7万 多的语料提取的卡方特征词: data/fetures_oyp.txt 训练好的模型保存在: svm/train.raw.data.pkl
 	而在里面的 svm/opti_negative.pkl 则是基于 data/tr.txt 里面的 30 篇正负性文章所训练的 svm 模型
 	
