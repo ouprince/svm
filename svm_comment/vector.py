@@ -5,6 +5,7 @@ reload(sys)
 import requests
 sys.setdefaultencoding("utf-8")
 import cPickle
+import jieba
 import jieba.posseg as pseg
 import numpy
 from tqdm import tqdm
@@ -18,17 +19,21 @@ sys.path.append(rootdir)
 
 from chinese_whispers.app.common.similarity import compare
 
+#加载自定义词典
+jieba.load_userdict(os.path.join(curdir,"data","word_zidingyi.txt"))
+
 fetures_word = []
 with open("data/fetures_chat.txt") as readme:
     for w in readme.readlines():
         fetures_word.append(w.replace("\n",""))
 		
+print "len(fetures_word) = %d" %len(fetures_word)
 
 y_mark = []
 y_vector = []
 
 				
-def load_vector(file_name,ngram = 2,mark_one = ['0'],mark_two = ['-1']):
+def load_vector(file_name,ngram = 1,mark_one = ['0'],mark_two = ['-1']):
     global y_mark
     global y_vector
     def similarity(s1,s2):
@@ -58,7 +63,7 @@ def load_vector(file_name,ngram = 2,mark_one = ['0'],mark_two = ['-1']):
 	
             y = title + post
             y = pseg.cut(y)
-            y = [o.word for o in y if o.flag.startswith("v") or o.flag == "n" ]
+            y = [o.word for o in y if o.flag.startswith("v") or o.flag == "n"]
             vector = []
             for w in fetures_word:
                 max_score = 0.0
@@ -71,7 +76,11 @@ def load_vector(file_name,ngram = 2,mark_one = ['0'],mark_two = ['-1']):
             y_vector.append(vector)
 	
 if __name__ == "__main__":
-    canshu = {"mark_one":["0"],"mark_two":["-1"]}
+    ceshi = pseg.cut("你好为什么")
+    for w in ceshi:
+        print w.word,w.flag
+
+    canshu = {"mark_one":["0"],"mark_two":["-1","1"],"ngram":1}
     load_vector("data/chat.txt",**canshu)
     assert len(y_vector) == len(y_mark),"vector should be same as long as mark"
     while True:
@@ -89,6 +98,6 @@ if __name__ == "__main__":
 
         print classification_report(y_test_mark,result,labels = labels,target_names = target_names) # 评估分类效果
 
-        if float(negative_rate) >= 0.8 and float(positive_rate) >= 0.6:
+        if float(negative_rate) >= 0.8 and float(positive_rate) >= 0.8:
             break
 
